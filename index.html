@@ -1,0 +1,1515 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FHD Finanzas</title>
+<style>
+:root {
+  --bg: #0a0f1d;
+  --card-bg: rgba(22, 33, 54, 0.88);
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --accent-glow: rgba(37, 99, 235, 0.45);
+  --gold: #f59e0b;
+  --text: #f8fafc;
+  --text-muted: #94a3b8;
+  --green: #10b981;
+  --red: #ef4444;
+  --border: #334155;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+
+body {
+  background-color: var(--bg);
+  background-image: 
+    linear-gradient(135deg, rgba(10, 15, 29, 0.93) 0%, rgba(15, 23, 42, 0.90) 100%),
+    url("https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=1920&q=80");
+  background-attachment: fixed;
+  background-size: cover;
+  background-position: center;
+  color: var(--text);
+  padding: 20px;
+  max-width: 1050px;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+.nav-tabs {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 6px 4px 14px 4px;
+  margin-bottom: 22px;
+  border-bottom: 2px solid rgba(51, 65, 85, 0.6);
+  scrollbar-width: thin;
+}
+.tab-btn {
+  background: rgba(15, 23, 42, 0.85);
+  color: #cbd5e1;
+  border: 2px solid #334155;
+  border-radius: 12px;
+  padding: 12px 20px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  width: auto;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.tab-btn:hover {
+  background-color: #1e293b;
+  border-color: #64748b;
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+.tab-btn.active {
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: #ffffff;
+  border-color: #60a5fa;
+  box-shadow: 0 0 16px var(--accent-glow), 0 4px 10px rgba(0, 0, 0, 0.35);
+  transform: translateY(-2px);
+}
+
+.tab-content { display: none; }
+.tab-content.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+.card {
+  background-color: var(--card-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 14px;
+  padding: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+  margin-bottom: 20px;
+}
+
+h1 { font-size: 1.7rem; margin-bottom: 2px; font-weight: 800; letter-spacing: -0.5px; }
+.subtitle-text { font-size: 0.8rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; margin-bottom: 4px; }
+h2 { font-size: 1.15rem; color: var(--text); margin-bottom: 16px; border-bottom: 1px solid var(--border); padding-bottom: 10px; font-weight: 700; }
+.label { color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
+.balance-display { font-size: 2.3rem; font-weight: 800; margin: 8px 0; }
+
+.row { display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+input, select {
+  flex: 1;
+  min-width: 140px;
+  padding: 11px 14px;
+  background: rgba(11, 17, 32, 0.85);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 0.9rem;
+}
+input:focus, select:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3); }
+
+.filter-btn-group {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  margin-bottom: 12px;
+}
+.filter-chip {
+  background: rgba(11, 17, 32, 0.6);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  border-radius: 6px;
+  padding: 5px 12px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  font-weight: 600;
+  width: auto;
+}
+.filter-chip.active {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+}
+
+.sim-row { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+.sim-input {
+  flex: 0 0 calc(33.333% - 7px);
+  min-width: 90px;
+  padding: 10px 12px;
+  font-size: 0.85rem;
+}
+
+button {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+  color: #fff;
+  padding: 12px 18px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+}
+button:hover {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.item-list { list-style: none; max-height: 280px; overflow-y: auto; }
+.item-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+.item-row:last-child { border-bottom: none; }
+.income { color: var(--green); font-weight: 700; }
+.expense { color: var(--red); font-weight: 700; }
+.asset-val { color: #38bdf8; font-weight: 700; }
+.delete-btn { background: none; border: none; color: var(--text-muted); width: auto; cursor: pointer; padding: 0 6px; box-shadow: none; }
+.delete-btn:hover { color: var(--red); background: none; }
+
+.progress-bar-bg { background: rgba(11, 17, 32, 0.8); border-radius: 999px; height: 10px; width: 100%; overflow: hidden; margin-top: 6px; }
+.progress-bar-fill { background: var(--accent); height: 100%; width: 0%; transition: width 0.3s; }
+
+/* Gráfica de Gastos */
+.chart-container {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+.chart-donut {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  margin: 0 auto;
+}
+.chart-legend {
+  flex: 1;
+  min-width: 220px;
+  list-style: none;
+}
+.chart-legend-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 0.85rem;
+  border-bottom: 1px solid rgba(51, 65, 85, 0.4);
+}
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.sim-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 14px;
+  font-size: 0.85rem;
+}
+.sim-table th, .sim-table td {
+  padding: 8px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.sim-table th { color: var(--text-muted); font-weight: 600; }
+
+/* Calendario Financiero */
+.cal-nav-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.cal-nav-btn {
+  width: auto;
+  padding: 7px 14px;
+  font-size: 0.85rem;
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid var(--border);
+}
+.cal-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+.cal-day-cell {
+  min-height: 86px;
+  background: rgba(11, 17, 32, 0.65);
+  border: 1px solid rgba(51, 65, 85, 0.55);
+  border-radius: 8px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  overflow: hidden;
+}
+.cal-day-cell:hover {
+  background: rgba(30, 41, 59, 0.8);
+  border-color: #60a5fa;
+  transform: translateY(-1px);
+}
+.cal-day-cell.other-month {
+  opacity: 0.35;
+  background: rgba(11, 17, 32, 0.25);
+}
+.cal-day-cell.today {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 1px #3b82f6 inset;
+}
+.cal-day-cell.selected {
+  border-color: #60a5fa;
+  background: rgba(37, 99, 235, 0.22);
+}
+.cal-day-num {
+  font-size: 0.82rem;
+  font-weight: 700;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.cal-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 1px 3px;
+  border-radius: 4px;
+  display: block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.cal-badge.inc { background: rgba(16, 185, 129, 0.18); color: var(--green); }
+.cal-badge.exp { background: rgba(239, 68, 68, 0.18); color: var(--red); }
+.cal-badge-dots {
+  display: flex;
+  gap: 3px;
+  margin-top: 3px;
+}
+.cal-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+.cal-dot.inc { background-color: var(--green); }
+.cal-dot.exp { background-color: var(--red); }
+
+footer {
+  text-align: center;
+  margin-top: 36px;
+  padding: 16px 0;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+</style>
+</head>
+<body>
+
+<div id="appContainer">
+  <header style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+    <div>
+      <h1 id="appTitle">FHD Finanzas</h1>
+      <p class="subtitle-text" id="appSubtitle">Desarrollo de salud financiera</p>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+      <select id="currencySelect" style="width: auto; min-width: 90px; padding: 6px 10px;" onchange="changeCurrency(this.value)">
+        <option value="$">USD ($)</option>
+        <option value="€">EUR (€)</option>
+        <option value="MX$">MXN ($)</option>
+        <option value="COP$">COP ($)</option>
+        <option value="ARS$">ARS ($)</option>
+        <option value="S/">PEN (S/)</option>
+        <option value="CLP$">CLP ($)</option>
+      </select>
+      <select id="langSelect" style="width: auto; min-width: 95px; padding: 6px 10px;" onchange="changeLanguage(this.value)">
+        <option value="es">Español</option>
+        <option value="en">English</option>
+      </select>
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <label for="monthFilter" class="label" id="lblFilterMonth" style="text-transform: none;">Mes:</label>
+        <input type="month" id="monthFilter" style="width: auto; min-width: 120px; padding: 6px 8px;" onchange="syncFromMonthFilter()" />
+      </div>
+    </div>
+  </header>
+
+  <div class="grid-2">
+    <div class="card" style="margin-bottom: 0;">
+      <span class="label" id="lblNetBalance">Balance Neto Disponible (<span id="currentMonthLabel"></span>)</span>
+      <div class="balance-display" id="netBalance">$0.00</div>
+      <p class="label" id="summaryStats">Ingresos: $0.00 | Gastos: $0.00</p>
+      <p class="label" id="carryoverStats" style="margin-top: 4px; color: #38bdf8;">Remanente anterior: $0.00</p>
+    </div>
+    <div class="card" style="margin-bottom: 0;">
+      <span class="label" id="lblTotalAssets">Valor Total en Activos y Cuentas</span>
+      <div class="balance-display" style="color: #38bdf8;" id="totalAssetsDisplay">$0.00</div>
+      <p class="label" id="assetsCountLabel">0 activos registrados</p>
+    </div>
+  </div>
+  <br>
+
+  <nav class="nav-tabs">
+    <button class="tab-btn active" onclick="switchTab('tab-tx')" id="tabBtnTx">💸 Movimientos</button>
+    <button class="tab-btn" onclick="switchTab('tab-cal')" id="tabBtnCal">📅 Calendario</button>
+    <button class="tab-btn" onclick="switchTab('tab-goals')" id="tabBtnGoals">🎯 Metas</button>
+    <button class="tab-btn" onclick="switchTab('tab-assets')" id="tabBtnAssets">💎 Activos (Assets)</button>
+    <button class="tab-btn" onclick="switchTab('tab-accounts')" id="tabBtnAccounts">🏦 Cuentas Vinculadas</button>
+    <button class="tab-btn" onclick="switchTab('tab-sim')" id="tabBtnSim">📈 Simulador Interés</button>
+  </nav>
+
+  <!-- PESTAÑA 1: TRANSACCIONES Y GRÁFICA DE PORCENTAJES -->
+  <section id="tab-tx" class="tab-content active">
+    <div class="grid-2">
+      <!-- Formulario de Movimientos -->
+      <div class="card">
+        <h2 id="titleTx">Registrar Movimiento</h2>
+        <form id="txForm">
+          <div class="row">
+            <select id="txType" onchange="updateCategoryDropdown()" style="font-weight: 700;">
+              <option value="income" style="color: var(--green);">➕ Ingreso (+)</option>
+              <option value="expense" style="color: var(--red);">➖ Gasto (-)</option>
+            </select>
+            <select id="txCategory" required></select>
+          </div>
+          <div class="row">
+            <input type="text" id="txDesc" placeholder="Concepto (ej. Sueldo, Bono, Taxes)" required />
+            <input type="number" id="txAmount" placeholder="Monto" step="0.01" required />
+            <input type="date" id="txDate" required />
+          </div>
+          <button type="submit" id="btnTxSubmit">Añadir Movimiento</button>
+        </form>
+
+        <div style="margin-top: 24px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+            <span class="label" id="titleTxList">Historial del Mes</span>
+            <div class="filter-btn-group">
+              <button type="button" class="filter-chip active" onclick="setListFilter('all')" id="btnFilterAll">Todos</button>
+              <button type="button" class="filter-chip" onclick="setListFilter('income')" id="btnFilterInc">Solo Ingresos</button>
+              <button type="button" class="filter-chip" onclick="setListFilter('expense')" id="btnFilterExp">Solo Gastos</button>
+            </div>
+          </div>
+          <ul class="item-list" id="txList"></ul>
+        </div>
+      </div>
+
+      <!-- Gráfica de Porcentaje por Clasificación de Gastos -->
+      <div class="card">
+        <h2 id="titleChart">Porcentaje por Clasificación (Gastos)</h2>
+        <div class="chart-container">
+          <div class="chart-donut">
+            <svg viewBox="0 0 36 36" style="width: 100%; height: 100%; transform: rotate(-90deg);" id="donutSvg">
+              <circle cx="18" cy="18" r="15.9155" fill="transparent" stroke="#1e293b" stroke-width="4"></circle>
+            </svg>
+            <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+              <span class="label" style="font-size: 0.65rem;" id="lblTotalExpenseChart">Total Gastos</span>
+              <strong style="font-size: 0.85rem;" id="donutTotalAmount">$0.00</strong>
+            </div>
+          </div>
+          <ul class="chart-legend" id="chartLegend"></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PESTAÑA CALENDARIO -->
+  <section id="tab-cal" class="tab-content">
+    <div class="card">
+      <div class="cal-nav-container">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button type="button" class="cal-nav-btn" onclick="navigateCalMonth(-1)">◀</button>
+          <button type="button" class="cal-nav-btn" onclick="navigateCalMonth(1)">▶</button>
+          <button type="button" class="cal-nav-btn" onclick="goToToday()" id="btnCalToday">Hoy</button>
+        </div>
+        <h2 id="calCurrentMonthDisplay" style="margin-bottom: 0; border-bottom: none; padding-bottom: 0; font-size: 1.25rem;"></h2>
+      </div>
+
+      <div class="cal-weekdays" id="calWeekdaysRow"></div>
+      <div class="cal-grid" id="calGrid"></div>
+
+      <div style="margin-top: 24px; border-top: 1px solid var(--border); padding-top: 16px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 10px;">
+          <span class="label" id="calSelectedDayTitle">Movimientos del Día Seleccionado</span>
+          <span id="calSelectedDayBadge" style="font-size: 0.85rem; font-weight: 700; color: #38bdf8;"></span>
+        </div>
+        <ul class="item-list" id="calDayTxList"></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- PESTAÑA 2: METAS -->
+  <section id="tab-goals" class="tab-content">
+    <div class="card">
+      <h2 id="titleGoals">Metas de Ahorro & Portafolio</h2>
+      <form id="goalForm">
+        <div class="row">
+          <input type="text" id="goalName" placeholder="Meta (ej. Fondo Emergencia)" required />
+          <input type="number" id="goalTarget" placeholder="Meta" step="0.01" required />
+        </div>
+        <div class="row">
+          <input type="number" id="goalCurrent" placeholder="Monto Inicial a Dedicar" step="0.01" />
+          <select id="goalDeductType">
+            <option value="Inversión">Deducir como Inversión</option>
+            <option value="Gastos Personales">Deducir como Gastos Personales</option>
+            <option value="Taxes">Deducir como Taxes (Impuestos)</option>
+            <option value="Gasto General">Deducir como Gasto General</option>
+          </select>
+        </div>
+        <button type="submit" id="btnGoalSubmit">Crear Meta y Deducir Saldo</button>
+      </form>
+      <div style="margin-top: 20px;">
+        <span class="label" id="titleGoalsProgress">Progreso de Objetivos</span>
+        <div id="goalsList" style="margin-top: 10px;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PESTAÑA 3: ACTIVOS -->
+  <section id="tab-assets" class="tab-content">
+    <div class="card">
+      <h2 id="titleAssets">Portafolio de Activos (Assets)</h2>
+      <form id="assetForm">
+        <div class="row">
+          <input type="text" id="assetName" placeholder="Nombre (ej. Inmueble, Vehículo)" required />
+          <input type="number" id="assetValue" placeholder="Valor Estimado" step="0.01" required />
+        </div>
+        <div class="row">
+          <select id="assetCategory"></select>
+          <select id="assetDeduct">
+            <option value="no">No deducir del saldo</option>
+            <option value="yes">Deducir compra del saldo (Inversión)</option>
+          </select>
+        </div>
+        <button type="submit" id="btnAssetSubmit">Registrar Activo</button>
+      </form>
+      <div style="margin-top: 20px;">
+        <span class="label" id="titleAssetsList">Mis Activos Registrados</span>
+        <ul class="item-list" id="assetsList"></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- PESTAÑA 4: CUENTAS BANCARIAS E INVERSIÓN -->
+  <section id="tab-accounts" class="tab-content">
+    <div class="card">
+      <h2 id="titleAccounts">Vincular Cuentas de Banco e Inversión</h2>
+      <form id="accountForm">
+        <div class="row">
+          <input type="text" id="accName" placeholder="Institución / Cuenta (ej. Chase, Vanguard)" required />
+          <input type="number" id="accBalance" placeholder="Balance Actual" step="0.01" required />
+        </div>
+        <div class="row">
+          <select id="accType">
+            <option value="bank">Cuenta Bancaria (Ahorro / Corriente)</option>
+            <option value="investment">Cuenta de Inversión / Brokerage</option>
+          </select>
+          <select id="accSyncMode">
+            <option value="asset">Sumar automáticamente a Activos Totales</option>
+            <option value="balance">Añadir saldo al Balance Disponible actual (Ingreso)</option>
+            <option value="monitor">Sólo Monitoreo (Sin alterar balances)</option>
+          </select>
+        </div>
+        <button type="submit" id="btnAccSubmit">Vincular Cuenta</button>
+      </form>
+      <div style="margin-top: 20px;">
+        <span class="label" id="titleAccountsList">Cuentas Enlazadas</span>
+        <ul class="item-list" id="accountsList"></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- PESTAÑA 5: SIMULADOR -->
+  <section id="tab-sim" class="tab-content">
+    <div class="card">
+      <h2 id="titleSimulator">Simulador de Interés Compuesto</h2>
+      <div class="sim-row">
+        <input type="number" id="simInitial" class="sim-input" placeholder="Inicial" value="1000" />
+        <input type="number" id="simMonthly" class="sim-input" placeholder="Mensual" value="200" />
+        <input type="number" id="simRate" class="sim-input" placeholder="Rend. Anual (%)" value="8" />
+        <input type="number" id="simYears" class="sim-input" placeholder="Años" value="10" />
+        <button type="button" style="flex: 0 0 calc(66.666% - 5px); min-width: 140px; padding: 10px 12px; font-size: 0.9rem;" onclick="calculateCompoundInterest()" id="btnSimCalc">Calcular Proyección</button>
+      </div>
+      
+      <div style="margin-top: 14px; font-size: 1rem;" id="simResult"></div>
+
+      <div style="margin-top: 20px; overflow-x: auto;">
+        <span class="label" id="titleSimTable">Tabla de Crecimiento Anual</span>
+        <table class="sim-table" id="simTable">
+          <thead>
+            <tr>
+              <th id="thYear">Año</th>
+              <th id="thDeposits">Capital Depositado</th>
+              <th id="thInterest">Interés Acumulado</th>
+              <th id="thBalance">Balance Final</th>
+            </tr>
+          </thead>
+          <tbody id="simTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span id="footerText">Creado por F.H.D (Financial Health Development) 2026</span>
+  </footer>
+</div>
+
+<script>
+const categoryColors = [
+  "#ef4444", "#3b82f6", "#10b981", "#f59e0b", 
+  "#8b5cf6", "#ec4899", "#06b6d4", "#f97316", "#14b8a6"
+];
+
+const i18n = {
+  es: {
+    appTitle: "FHD Finanzas",
+    appSubtitle: "Desarrollo de salud financiera",
+    tabTx: "💸 Movimientos",
+    tabCal: "📅 Calendario",
+    tabGoals: "🎯 Metas",
+    tabAssets: "💎 Activos (Assets)",
+    tabAccounts: "🏦 Cuentas Vinculadas",
+    tabSim: "📈 Simulador Interés",
+    titleChart: "Porcentaje por Clasificación (Gastos)",
+    lblTotalExpenseChart: "Total Gastos",
+    noExpensesText: "Sin gastos en este mes para graficar.",
+    lblFilterMonth: "Mes:",
+    lblNetBalance: "Balance Neto Disponible",
+    lblTotalAssets: "Valor Total en Activos y Cuentas",
+    assetsCount: (n) => `${n} items registrados`,
+    summaryStats: (inc, exp) => `Ingresos mes: ${inc} | Gastos mes: ${exp}`,
+    carryoverStats: (rem) => `Remanente acumulado anterior: ${rem}`,
+    allMonths: "Todos",
+    titleTx: "Registrar Movimiento",
+    txDescPlaceholder: "Concepto (ej. Sueldo, Bono, Taxes)",
+    txAmountPlaceholder: "Monto",
+    btnTxSubmit: "Añadir Movimiento",
+    titleTxList: "Historial del Mes",
+    btnFilterAll: "Todos",
+    btnFilterInc: "Solo Ingresos",
+    btnFilterExp: "Solo Gastos",
+    incomeOpt: "➕ Ingreso (+)",
+    expenseOpt: "➖ Gasto (-)",
+    incomeCategories: ["Sueldo / Salario", "Negocio / Ventas", "Inversiones / Dividendos", "Freelance / Servicios", "Regalo / Bono", "Otros Ingresos"],
+    expenseCategories: ["Taxes", "Gastos Personales", "Vivienda", "Alimentación", "Inversión", "Negocio", "Transporte", "Ocio", "Otros Gastos"],
+    titleGoals: "Metas de Ahorro & Portafolio",
+    goalNamePlaceholder: "Meta (ej. Fondo Emergencia)",
+    goalTargetPlaceholder: "Meta Objetivo",
+    goalCurrentPlaceholder: "Monto Inicial a Dedicar",
+    deductInvest: "Deducir como Inversión",
+    deductPersonal: "Deducir como Gastos Personales",
+    deductTaxes: "Deducir como Taxes (Impuestos)",
+    deductExpense: "Deducir como Gasto General",
+    btnGoalSubmit: "Crear Meta y Deducir Saldo",
+    titleGoalsProgress: "Progreso de Objetivos",
+    btnDeposit: "+ Abonar",
+    btnDelete: "Eliminar",
+    promptDeposit: "Monto a abonar y deducir del saldo:",
+    confirmInvest: "¿Deseas clasificarlo como 'Inversión'? (Aceptar = Inversión, Cancelar = Gastos Personales)",
+    txInitGoal: (g) => `Aporte inicial a meta: ${g}`,
+    txDepositGoal: (g) => `Abono a meta: ${g}`,
+    titleAssets: "Portafolio de Activos (Assets)",
+    assetNamePlaceholder: "Nombre (ej. Inmueble, Vehículo)",
+    assetValuePlaceholder: "Valor Estimado",
+    assetCategories: ["Bienes Raíces", "Acciones / Fondos", "Criptomonedas", "Efectivo / Depósitos", "Vehículos / Equipos", "Negocio / Proyecto"],
+    assetNoDeduct: "No deducir del saldo",
+    assetYesDeduct: "Deducir compra del saldo (Inversión)",
+    btnAssetSubmit: "Registrar Activo",
+    titleAssetsList: "Mis Activos Registrados",
+    txAssetBuy: (a) => `Adquisición activo: ${a}`,
+    titleAccounts: "Vincular Cuentas de Banco e Inversión",
+    accNamePh: "Institución / Cuenta (ej. Chase, Vanguard)",
+    accBalancePh: "Balance Actual",
+    accBankOpt: "Cuenta Bancaria (Ahorro / Corriente)",
+    accInvestOpt: "Cuenta de Inversión / Brokerage",
+    accSyncAsset: "Sumar automáticamente a Activos Totales",
+    accSyncBalance: "Añadir saldo al Balance Disponible actual (Ingreso)",
+    accSyncMonitor: "Sólo Monitoreo (Sin alterar balances)",
+    btnAccSubmit: "Vincular Cuenta",
+    titleAccountsList: "Cuentas Enlazadas",
+    txLinkAcc: (a) => `Saldo inicial cuenta vinculada: ${a}`,
+    promptUpdateAcc: "Introduce el nuevo balance actualizado para esta cuenta:",
+    titleSimulator: "Simulador de Interés Compuesto",
+    simInitialPh: "Inicial",
+    simMonthlyPh: "Mensual",
+    simRatePh: "Rend. Anual (%)",
+    simYearsPh: "Años",
+    btnSimCalc: "Calcular Proyección",
+    simProjection: (years, total) => `Proyección a ${years} años: <strong>${total}</strong>`,
+    simDetails: (invested, interest) => `Capital aportado: ${invested} | Ganancia por interés: ${interest}`,
+    titleSimTable: "Tabla de Crecimiento Anual",
+    thYear: "Año",
+    thDeposits: "Capital Depositado",
+    thInterest: "Interés Acumulado",
+    thBalance: "Balance Final",
+    footerText: "Creado por F.H.D (Financial Health Development) 2026",
+    calToday: "Hoy",
+    calWeekdays: ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"],
+    calMonths: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+    calSelectedDayTitle: "Movimientos del Día",
+    calNoTxDay: "No hay movimientos registrados en este día."
+  },
+  en: {
+    appTitle: "FHD Finance",
+    appSubtitle: "Financial Health Development",
+    tabTx: "💸 Transactions",
+    tabCal: "📅 Calendar",
+    tabGoals: "🎯 Goals",
+    tabAssets: "💎 Assets",
+    tabAccounts: "🏦 Linked Accounts",
+    tabSim: "📈 Interest Simulator",
+    titleChart: "Expense Breakdown Percentage",
+    lblTotalExpenseChart: "Total Expenses",
+    noExpensesText: "No expenses recorded this month for breakdown.",
+    lblFilterMonth: "Month:",
+    lblNetBalance: "Net Available Balance",
+    lblTotalAssets: "Total Assets & Linked Accounts",
+    assetsCount: (n) => `${n} registered items`,
+    summaryStats: (inc, exp) => `Month Income: ${inc} | Month Expenses: ${exp}`,
+    carryoverStats: (rem) => `Previous Rollover Balance: ${rem}`,
+    allMonths: "All",
+    titleTx: "Record Transaction",
+    txDescPlaceholder: "Description (e.g. Salary, Bonus, Taxes)",
+    txAmountPlaceholder: "Amount",
+    btnTxSubmit: "Add Transaction",
+    titleTxList: "Month History",
+    btnFilterAll: "All",
+    btnFilterInc: "Income Only",
+    btnFilterExp: "Expenses Only",
+    incomeOpt: "➕ Income (+)",
+    expenseOpt: "➖ Expense (-)",
+    incomeCategories: ["Salary / Wages", "Business / Sales", "Investments / Dividends", "Freelance / Services", "Gift / Bonus", "Other Income"],
+    expenseCategories: ["Taxes", "Personal Expenses", "Housing", "Groceries", "Investment", "Business", "Transportation", "Leisure", "Other Expenses"],
+    titleGoals: "Savings Goals & Portfolio",
+    goalNamePlaceholder: "Goal (e.g. Emergency Fund)",
+    goalTargetPlaceholder: "Target Goal",
+    goalCurrentPlaceholder: "Initial Amount to Deduct",
+    deductInvest: "Deduct as Investment",
+    deductPersonal: "Deduct as Personal Expenses",
+    deductTaxes: "Deduct as Taxes",
+    deductExpense: "Deduct as General Expense",
+    btnGoalSubmit: "Create Goal & Deduct Balance",
+    titleGoalsProgress: "Goal Progress",
+    btnDeposit: "+ Deposit",
+    btnDelete: "Delete",
+    promptDeposit: "Amount to deposit and deduct from available balance:",
+    confirmInvest: "Classify as 'Investment'? (OK = Investment, Cancel = Personal Expenses)",
+    txInitGoal: (g) => `Initial deposit to goal: ${g}`,
+    txDepositGoal: (g) => `Deposit to goal: ${g}`,
+    titleAssets: "Asset Portfolio",
+    assetNamePlaceholder: "Name (e.g. Real Estate, Vehicle)",
+    assetValuePlaceholder: "Estimated Value",
+    assetCategories: ["Real Estate", "Stocks / ETFs", "Crypto", "Cash / Deposits", "Vehicles / Tools", "Business / Venture"],
+    assetNoDeduct: "Do not deduct from balance",
+    assetYesDeduct: "Deduct purchase from balance (Investment)",
+    btnAssetSubmit: "Add Asset",
+    titleAssetsList: "My Registered Assets",
+    txAssetBuy: (a) => `Asset purchase: ${a}`,
+    titleAccounts: "Link Bank & Investment Accounts",
+    accNamePh: "Institution / Account (e.g. Chase, Vanguard)",
+    accBalancePh: "Current Balance",
+    accBankOpt: "Bank Account (Savings / Checking)",
+    accInvestOpt: "Investment / Brokerage Account",
+    accSyncAsset: "Add automatically to Total Assets",
+    accSyncBalance: "Add to current Available Balance (Income)",
+    accSyncMonitor: "Monitor only (Do not alter balances)",
+    btnAccSubmit: "Link Account",
+    titleAccountsList: "Linked Accounts",
+    txLinkAcc: (a) => `Initial balance linked account: ${a}`,
+    promptUpdateAcc: "Enter the updated balance for this account:",
+    titleSimulator: "Compound Interest Simulator",
+    simInitialPh: "Initial",
+    simMonthlyPh: "Monthly",
+    simRatePh: "Annual Return (%)",
+    simYearsPh: "Years",
+    btnSimCalc: "Calculate Projection",
+    simProjection: (years, total) => `Projected in ${years} years: <strong>${total}</strong>`,
+    simDetails: (invested, interest) => `Contributed principal: ${invested} | Interest earned: ${interest}`,
+    titleSimTable: "Annual Growth Schedule",
+    thYear: "Year",
+    thDeposits: "Total Contributed",
+    thInterest: "Total Interest",
+    thBalance: "Ending Balance",
+    footerText: "Created by F.H.D (Financial Health Development) 2026",
+    calToday: "Today",
+    calWeekdays: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+    calMonths: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+    calSelectedDayTitle: "Daily Transactions",
+    calNoTxDay: "No transactions recorded for this date."
+  }
+};
+
+let currentLang = localStorage.getItem('fhd_lang') || 'es';
+let currentCurrency = localStorage.getItem('fhd_currency') || '$';
+let activeTxFilter = 'all';
+
+// Inicializar fechas
+const now = new Date();
+const todayIso = now.toISOString().slice(0, 10);
+const currentMonthIso = now.toISOString().slice(0, 7);
+
+let calYear = now.getFullYear();
+let calMonth = now.getMonth(); // 0-indexed
+let calSelectedDate = todayIso;
+
+document.getElementById('monthFilter').value = currentMonthIso;
+document.getElementById('txDate').value = todayIso;
+document.getElementById('currencySelect').value = currentCurrency;
+
+// Cargar datos locales
+let transactions = JSON.parse(localStorage.getItem('fhd_transactions')) || [];
+let goals = JSON.parse(localStorage.getItem('fhd_goals')) || [];
+let assets = JSON.parse(localStorage.getItem('fhd_assets')) || [];
+let accounts = JSON.parse(localStorage.getItem('fhd_accounts')) || [];
+
+// Migración retroactiva: asegurar campo "date" (YYYY-MM-DD)
+transactions.forEach(tr => {
+  if (!tr.date) {
+    tr.date = tr.month ? `${tr.month}-01` : todayIso;
+  } else if (tr.date.length > 10) {
+    tr.date = tr.date.slice(0, 10);
+  }
+  if (!tr.month && tr.date) {
+    tr.month = tr.date.slice(0, 7);
+  }
+});
+
+const formatCurrency = (num) => {
+  return currentCurrency + ' ' + Number(num).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+};
+
+function changeCurrency(curr) {
+  currentCurrency = curr;
+  localStorage.setItem('fhd_currency', curr);
+  saveAndRender();
+  calculateCompoundInterest();
+}
+
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  
+  document.getElementById(tabId).classList.add('active');
+  const activeBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => b.getAttribute('onclick').includes(tabId));
+  if (activeBtn) activeBtn.classList.add('active');
+
+  if (tabId === 'tab-cal') {
+    renderCalendar();
+  }
+}
+
+function updateCategoryDropdown() {
+  const t = i18n[currentLang];
+  const type = document.getElementById('txType').value;
+  const txCat = document.getElementById('txCategory');
+  const currentVal = txCat.value;
+  txCat.innerHTML = '';
+
+  const list = type === 'income' ? t.incomeCategories : t.expenseCategories;
+  list.forEach(cat => {
+    const opt = document.createElement('option');
+    opt.value = cat;
+    opt.innerText = cat;
+    txCat.appendChild(opt);
+  });
+
+  if (list.includes(currentVal)) {
+    txCat.value = currentVal;
+  }
+}
+
+function setListFilter(filterType) {
+  activeTxFilter = filterType;
+  document.getElementById('btnFilterAll').classList.toggle('active', filterType === 'all');
+  document.getElementById('btnFilterInc').classList.toggle('active', filterType === 'income');
+  document.getElementById('btnFilterExp').classList.toggle('active', filterType === 'expense');
+  saveAndRender();
+}
+
+function changeLanguage(lang) {
+  currentLang = lang;
+  localStorage.setItem('fhd_lang', lang);
+  applyTranslations();
+  saveAndRender();
+  calculateCompoundInterest();
+}
+
+function applyTranslations() {
+  const t = i18n[currentLang];
+  document.title = t.appTitle;
+  document.getElementById('langSelect').value = currentLang;
+
+  document.getElementById('appTitle').innerText = t.appTitle;
+  document.getElementById('appSubtitle').innerText = t.appSubtitle;
+  document.getElementById('lblFilterMonth').innerText = t.lblFilterMonth;
+  document.getElementById('lblTotalAssets').innerText = t.lblTotalAssets;
+
+  document.getElementById('tabBtnTx').innerText = t.tabTx;
+  document.getElementById('tabBtnCal').innerText = t.tabCal;
+  document.getElementById('tabBtnGoals').innerText = t.tabGoals;
+  document.getElementById('tabBtnAssets').innerText = t.tabAssets;
+  document.getElementById('tabBtnAccounts').innerText = t.tabAccounts;
+  document.getElementById('tabBtnSim').innerText = t.tabSim;
+
+  document.getElementById('titleTx').innerText = t.titleTx;
+  document.getElementById('titleChart').innerText = t.titleChart;
+  document.getElementById('lblTotalExpenseChart').innerText = t.lblTotalExpenseChart;
+  document.getElementById('txDesc').placeholder = t.txDescPlaceholder;
+  document.getElementById('txAmount').placeholder = t.txAmountPlaceholder;
+  document.getElementById('btnTxSubmit').innerText = t.btnTxSubmit;
+  document.getElementById('titleTxList').innerText = t.titleTxList;
+  document.getElementById('btnFilterAll').innerText = t.btnFilterAll;
+  document.getElementById('btnFilterInc').innerText = t.btnFilterInc;
+  document.getElementById('btnFilterExp').innerText = t.btnFilterExp;
+
+  const txType = document.getElementById('txType');
+  txType.options[0].text = t.incomeOpt;
+  txType.options[1].text = t.expenseOpt;
+  updateCategoryDropdown();
+
+  document.getElementById('btnCalToday').innerText = t.calToday;
+  document.getElementById('calSelectedDayTitle').innerText = t.calSelectedDayTitle;
+
+  document.getElementById('titleGoals').innerText = t.titleGoals;
+  document.getElementById('goalName').placeholder = t.goalNamePlaceholder;
+  document.getElementById('goalTarget').placeholder = t.goalTargetPlaceholder;
+  document.getElementById('goalCurrent').placeholder = t.goalCurrentPlaceholder;
+  const deductType = document.getElementById('goalDeductType');
+  deductType.options[0].text = t.deductInvest;
+  deductType.options[1].text = t.deductPersonal;
+  deductType.options[2].text = t.deductTaxes;
+  deductType.options[3].text = t.deductExpense;
+  document.getElementById('btnGoalSubmit').innerText = t.btnGoalSubmit;
+  document.getElementById('titleGoalsProgress').innerText = t.titleGoalsProgress;
+
+  document.getElementById('titleAssets').innerText = t.titleAssets;
+  document.getElementById('assetName').placeholder = t.assetNamePlaceholder;
+  document.getElementById('assetValue').placeholder = t.assetValuePlaceholder;
+  const assetCat = document.getElementById('assetCategory');
+  const prevAssetCat = assetCat.value;
+  assetCat.innerHTML = '';
+  t.assetCategories.forEach(cat => {
+    const opt = document.createElement('option');
+    opt.value = cat;
+    opt.innerText = cat;
+    assetCat.appendChild(opt);
+  });
+  if (prevAssetCat) assetCat.value = prevAssetCat;
+
+  const assetDeduct = document.getElementById('assetDeduct');
+  assetDeduct.options[0].text = t.assetNoDeduct;
+  assetDeduct.options[1].text = t.assetYesDeduct;
+  document.getElementById('btnAssetSubmit').innerText = t.btnAssetSubmit;
+  document.getElementById('titleAssetsList').innerText = t.titleAssetsList;
+
+  document.getElementById('titleAccounts').innerText = t.titleAccounts;
+  document.getElementById('accName').placeholder = t.accNamePh;
+  document.getElementById('accBalance').placeholder = t.accBalancePh;
+  const accType = document.getElementById('accType');
+  accType.options[0].text = t.accBankOpt;
+  accType.options[1].text = t.accInvestOpt;
+  const accSync = document.getElementById('accSyncMode');
+  accSync.options[0].text = t.accSyncAsset;
+  accSync.options[1].text = t.accSyncBalance;
+  accSync.options[2].text = t.accSyncMonitor;
+  document.getElementById('btnAccSubmit').innerText = t.btnAccSubmit;
+  document.getElementById('titleAccountsList').innerText = t.titleAccountsList;
+
+  document.getElementById('titleSimulator').innerText = t.titleSimulator;
+  document.getElementById('simInitial').placeholder = t.simInitialPh;
+  document.getElementById('simMonthly').placeholder = t.simMonthlyPh;
+  document.getElementById('simRate').placeholder = t.simRatePh;
+  document.getElementById('simYears').placeholder = t.simYearsPh;
+  document.getElementById('btnSimCalc').innerText = t.btnSimCalc;
+  document.getElementById('titleSimTable').innerText = t.titleSimTable;
+  document.getElementById('thYear').innerText = t.thYear;
+  document.getElementById('thDeposits').innerText = t.thDeposits;
+  document.getElementById('thInterest').innerText = t.thInterest;
+  document.getElementById('thBalance').innerText = t.thBalance;
+
+  document.getElementById('footerText').innerText = t.footerText;
+  renderCalendar();
+}
+
+function renderExpensesChart(expenseTxs) {
+  const t = i18n[currentLang];
+  const legend = document.getElementById('chartLegend');
+  const svg = document.getElementById('donutSvg');
+  legend.innerHTML = '';
+  
+  while (svg.children.length > 1) {
+    svg.removeChild(svg.lastChild);
+  }
+
+  const categoryTotals = {};
+  let totalExpense = 0;
+
+  expenseTxs.forEach(tx => {
+    const cat = tx.category || "Otros Gastos";
+    categoryTotals[cat] = (categoryTotals[cat] || 0) + tx.amount;
+    totalExpense += tx.amount;
+  });
+
+  document.getElementById('donutTotalAmount').innerText = formatCurrency(totalExpense);
+
+  if (totalExpense === 0) {
+    legend.innerHTML = `<li style="color: var(--text-muted); font-size: 0.85rem; padding: 10px 0;">${t.noExpensesText}</li>`;
+    return;
+  }
+
+  let cumulativeOffset = 0;
+  let colorIdx = 0;
+
+  Object.entries(categoryTotals).forEach(([cat, amount]) => {
+    const percentage = (amount / totalExpense) * 100;
+    const color = categoryColors[colorIdx % categoryColors.length];
+    colorIdx++;
+
+    const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    circle.setAttribute("cx", "18");
+    circle.setAttribute("cy", "18");
+    circle.setAttribute("r", "15.9155");
+    circle.setAttribute("fill", "transparent");
+    circle.setAttribute("stroke", color);
+    circle.setAttribute("stroke-width", "4");
+    circle.setAttribute("stroke-dasharray", `${percentage} ${100 - percentage}`);
+    circle.setAttribute("stroke-dashoffset", `-${cumulativeOffset}`);
+    svg.appendChild(circle);
+
+    cumulativeOffset += percentage;
+
+    const li = document.createElement('li');
+    li.className = 'chart-legend-item';
+    li.innerHTML = `
+      <div style="display: flex; align-items: center;">
+        <span class="legend-dot" style="background-color: ${color};"></span>
+        <span>${cat}</span>
+      </div>
+      <div>
+        <strong>${percentage.toFixed(1)}%</strong>
+        <span style="color: var(--text-muted); font-size: 0.8rem; margin-left: 6px;">(${formatCurrency(amount)})</span>
+      </div>
+    `;
+    legend.appendChild(li);
+  });
+}
+
+function syncFromMonthFilter() {
+  const selectedMonth = document.getElementById('monthFilter').value;
+  if (selectedMonth) {
+    const [y, m] = selectedMonth.split('-').map(Number);
+    calYear = y;
+    calMonth = m - 1;
+  }
+  saveAndRender();
+}
+
+function navigateCalMonth(step) {
+  calMonth += step;
+  if (calMonth < 0) {
+    calMonth = 11;
+    calYear--;
+  } else if (calMonth > 11) {
+    calMonth = 0;
+    calYear++;
+  }
+  const ym = `${calYear}-${String(calMonth + 1).padStart(2, '0')}`;
+  document.getElementById('monthFilter').value = ym;
+  saveAndRender();
+}
+
+function goToToday() {
+  const d = new Date();
+  calYear = d.getFullYear();
+  calMonth = d.getMonth();
+  calSelectedDate = d.toISOString().slice(0, 10);
+  document.getElementById('monthFilter').value = calSelectedDate.slice(0, 7);
+  saveAndRender();
+}
+
+function selectCalDate(isoDate) {
+  calSelectedDate = isoDate;
+  document.getElementById('txDate').value = isoDate;
+  renderCalendar();
+}
+
+function renderCalendar() {
+  const t = i18n[currentLang];
+  const monthDisplay = document.getElementById('calCurrentMonthDisplay');
+  monthDisplay.innerText = `${t.calMonths[calMonth]} ${calYear}`;
+
+  const weekdaysRow = document.getElementById('calWeekdaysRow');
+  weekdaysRow.innerHTML = t.calWeekdays.map(d => `<div>${d}</div>`).join('');
+
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+
+  const firstDayOfMonth = new Date(calYear, calMonth, 1);
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+  const daysInPrevMonth = new Date(calYear, calMonth, 0).getDate();
+
+  // 0 = Dom, 1 = Lun ... -> convertir para inicio en Lunes (0 = Lun, 6 = Dom)
+  let startDayOfWeek = firstDayOfMonth.getDay() - 1;
+  if (startDayOfWeek === -1) startDayOfWeek = 6;
+
+  // Días del mes anterior
+  for (let i = startDayOfWeek - 1; i >= 0; i--) {
+    const dayNum = daysInPrevMonth - i;
+    const prevDate = new Date(calYear, calMonth - 1, dayNum);
+    const dateStr = prevDate.toISOString().slice(0, 10);
+    grid.appendChild(createCalCell(dateStr, dayNum, true));
+  }
+
+  // Días del mes actual
+  for (let day = 1; day <= daysInMonth; day++) {
+    const dateStr = `${calYear}-${String(calMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    grid.appendChild(createCalCell(dateStr, day, false));
+  }
+
+  // Celdas complementarias al final (completar múltiplos de 7)
+  const totalRendered = startDayOfWeek + daysInMonth;
+  const remainingCells = (7 - (totalRendered % 7)) % 7;
+  for (let i = 1; i <= remainingCells; i++) {
+    const nextDate = new Date(calYear, calMonth + 1, i);
+    const dateStr = nextDate.toISOString().slice(0, 10);
+    grid.appendChild(createCalCell(dateStr, i, true));
+  }
+
+  renderCalendarDayDetails();
+}
+
+function createCalCell(dateStr, dayNum, isOtherMonth) {
+  const cell = document.createElement('div');
+  cell.className = 'cal-day-cell';
+  if (isOtherMonth) cell.classList.add('other-month');
+  if (dateStr === todayIso) cell.classList.add('today');
+  if (dateStr === calSelectedDate) cell.classList.add('selected');
+
+  cell.onclick = () => selectCalDate(dateStr);
+
+  const dayTxs = transactions.filter(t => (t.date || `${t.month}-01`) === dateStr);
+  let dayInc = 0;
+  let dayExp = 0;
+  dayTxs.forEach(t => {
+    if (t.type === 'income') dayInc += t.amount;
+    else dayExp += t.amount;
+  });
+
+  let badgesHtml = '';
+  if (dayInc > 0) {
+    badgesHtml += `<span class="cal-badge inc">+${Math.round(dayInc)}</span>`;
+  }
+  if (dayExp > 0) {
+    badgesHtml += `<span class="cal-badge exp">-${Math.round(dayExp)}</span>`;
+  }
+
+  let dotsHtml = '';
+  if (dayInc > 0) dotsHtml += '<span class="cal-dot inc"></span>';
+  if (dayExp > 0) dotsHtml += '<span class="cal-dot exp"></span>';
+
+  cell.innerHTML = `
+    <div>
+      <div class="cal-day-num">
+        <span>${dayNum}</span>
+        <div class="cal-badge-dots">${dotsHtml}</div>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 2px; margin-top: 4px;">
+      ${badgesHtml}
+    </div>
+  `;
+
+  return cell;
+}
+
+function renderCalendarDayDetails() {
+  const t = i18n[currentLang];
+  const listEl = document.getElementById('calDayTxList');
+  const badgeEl = document.getElementById('calSelectedDayBadge');
+  listEl.innerHTML = '';
+
+  badgeEl.innerText = calSelectedDate;
+
+  const dayTxs = transactions.filter(tr => (tr.date || `${tr.month}-01`) === calSelectedDate);
+
+  if (dayTxs.length === 0) {
+    listEl.innerHTML = `<li style="color: var(--text-muted); font-size: 0.85rem; padding: 12px 0;">${t.calNoTxDay}</li>`;
+    return;
+  }
+
+  dayTxs.forEach(tr => {
+    const originalIndex = transactions.indexOf(tr);
+    const li = document.createElement('li');
+    li.className = 'item-row';
+    const isInc = tr.type === 'income';
+    li.innerHTML = `
+      <div>
+        <strong>${tr.desc}</strong> 
+        <small style="color: var(--text-muted); display: block;">${tr.category}</small>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span class="${isInc ? 'income' : 'expense'}">${isInc ? '+' : '-'}${formatCurrency(tr.amount)}</span>
+        <button class="delete-btn" onclick="removeTx(${originalIndex})">✕</button>
+      </div>
+    `;
+    listEl.appendChild(li);
+  });
+}
+
+function saveAndRender() {
+  const t = i18n[currentLang];
+  localStorage.setItem('fhd_transactions', JSON.stringify(transactions));
+  localStorage.setItem('fhd_goals', JSON.stringify(goals));
+  localStorage.setItem('fhd_assets', JSON.stringify(assets));
+  localStorage.setItem('fhd_accounts', JSON.stringify(accounts));
+
+  const selectedMonth = document.getElementById('monthFilter').value;
+  document.getElementById('currentMonthLabel').innerText = selectedMonth || t.allMonths;
+  document.getElementById('lblNetBalance').innerHTML = `${t.lblNetBalance} (<span id="currentMonthLabel">${selectedMonth || t.allMonths}</span>)`;
+
+  let carryover = 0;
+  if (selectedMonth) {
+    transactions.forEach(tr => {
+      const trMonth = tr.month || (tr.date ? tr.date.slice(0, 7) : '');
+      if (trMonth && trMonth < selectedMonth) {
+        if (tr.type === 'income') carryover += tr.amount;
+        else carryover -= tr.amount;
+      }
+    });
+  }
+
+  const filteredTxs = transactions.filter(tr => {
+    const trMonth = tr.month || (tr.date ? tr.date.slice(0, 7) : '');
+    return !selectedMonth || trMonth === selectedMonth;
+  });
+
+  let income = 0;
+  let expenses = 0;
+  const expenseTxs = [];
+
+  filteredTxs.forEach(tr => {
+    if (tr.type === 'income') {
+      income += tr.amount;
+    } else {
+      expenses += tr.amount;
+      expenseTxs.push(tr);
+    }
+  });
+
+  const net = carryover + income - expenses;
+  document.getElementById('netBalance').innerText = formatCurrency(net);
+  document.getElementById('summaryStats').innerText = t.summaryStats(formatCurrency(income), formatCurrency(expenses));
+  
+  const carryEl = document.getElementById('carryoverStats');
+  if (selectedMonth) {
+    carryEl.style.display = 'block';
+    carryEl.innerText = t.carryoverStats(formatCurrency(carryover));
+  } else {
+    carryEl.style.display = 'none';
+  }
+
+  renderExpensesChart(expenseTxs);
+
+  const txList = document.getElementById('txList');
+  txList.innerHTML = '';
+  
+  const displayedTxs = filteredTxs.filter(tr => activeTxFilter === 'all' || tr.type === activeTxFilter);
+
+  displayedTxs.slice().reverse().forEach((tr) => {
+    const originalIndex = transactions.indexOf(tr);
+    const li = document.createElement('li');
+    li.className = 'item-row';
+    const isInc = tr.type === 'income';
+    li.innerHTML = `
+      <div>
+        <strong>${tr.desc}</strong> 
+        <small style="color: var(--text-muted); display: block;">${tr.category} • ${tr.date || tr.month}</small>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span class="${isInc ? 'income' : 'expense'}">${isInc ? '+' : '-'}${formatCurrency(tr.amount)}</span>
+        <button class="delete-btn" onclick="removeTx(${originalIndex})">✕</button>
+      </div>
+    `;
+    txList.appendChild(li);
+  });
+
+  const goalsList = document.getElementById('goalsList');
+  goalsList.innerHTML = '';
+  goals.forEach((g, idx) => {
+    const percent = Math.min(Math.round((g.current / g.target) * 100), 100);
+    const div = document.createElement('div');
+    div.style.marginBottom = '14px';
+    div.innerHTML = `
+      <div style="display: flex; justify-content: space-between; font-size: 0.9rem;">
+        <span>${g.name}</span>
+        <span>${formatCurrency(g.current)} / ${formatCurrency(g.target)} (${percent}%)</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" style="width: ${percent}%;"></div>
+      </div>
+      <div style="display: flex; gap: 8px; margin-top: 6px;">
+        <button style="padding: 4px 8px; font-size: 0.75rem;" onclick="addFundsToGoal(${idx})">${t.btnDeposit}</button>
+        <button class="delete-btn" style="font-size: 0.8rem;" onclick="removeGoal(${idx})">${t.btnDelete}</button>
+      </div>
+    `;
+    goalsList.appendChild(div);
+  });
+
+  let totalAssetsVal = 0;
+  const assetsList = document.getElementById('assetsList');
+  assetsList.innerHTML = '';
+  assets.forEach((ast, idx) => {
+    totalAssetsVal += ast.value;
+    const li = document.createElement('li');
+    li.className = 'item-row';
+    li.innerHTML = `
+      <div>
+        <strong>${ast.name}</strong> <small style="color: var(--text-muted)">(${ast.category})</small>
+      </div>
+      <div>
+        <span class="asset-val">${formatCurrency(ast.value)}</span>
+        <button class="delete-btn" onclick="removeAsset(${idx})">✕</button>
+      </div>
+    `;
+    assetsList.appendChild(li);
+  });
+
+  const accountsList = document.getElementById('accountsList');
+  accountsList.innerHTML = '';
+  accounts.forEach((acc, idx) => {
+    if (acc.syncMode === 'asset') {
+      totalAssetsVal += acc.balance;
+    }
+    const li = document.createElement('li');
+    li.className = 'item-row';
+    const badgeType = acc.type === 'bank' ? '🏦' : '📈';
+    li.innerHTML = `
+      <div>
+        <strong>${acc.name}</strong> <small style="color: var(--text-muted)">(${badgeType})</small>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span class="asset-val">${formatCurrency(acc.balance)}</span>
+        <button style="padding: 2px 6px; font-size: 0.75rem; width: auto;" onclick="updateAccountBalance(${idx})">✎</button>
+        <button class="delete-btn" onclick="removeAccount(${idx})">✕</button>
+      </div>
+    `;
+    accountsList.appendChild(li);
+  });
+
+  document.getElementById('totalAssetsDisplay').innerText = formatCurrency(totalAssetsVal);
+  document.getElementById('assetsCountLabel').innerText = t.assetsCount(assets.length + accounts.length);
+
+  renderCalendar();
+}
+
+document.getElementById('txForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const desc = document.getElementById('txDesc').value;
+  const amount = parseFloat(document.getElementById('txAmount').value);
+  const type = document.getElementById('txType').value;
+  const category = document.getElementById('txCategory').value;
+  const dateVal = document.getElementById('txDate').value || todayIso;
+  const monthVal = dateVal.slice(0, 7);
+
+  transactions.push({ 
+    desc, 
+    amount, 
+    type, 
+    category, 
+    date: dateVal, 
+    month: monthVal 
+  });
+
+  document.getElementById('txDesc').value = '';
+  document.getElementById('txAmount').value = '';
+  calSelectedDate = dateVal;
+  saveAndRender();
+});
+
+document.getElementById('goalForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const t = i18n[currentLang];
+  const name = document.getElementById('goalName').value;
+  const target = parseFloat(document.getElementById('goalTarget').value);
+  const current = parseFloat(document.getElementById('goalCurrent').value) || 0;
+  const deductType = document.getElementById('goalDeductType').value;
+  const activeMonth = document.getElementById('monthFilter').value || currentMonthIso;
+
+  if (current > 0) {
+    transactions.push({
+      desc: t.txInitGoal(name),
+      amount: current,
+      type: 'expense',
+      category: deductType,
+      month: activeMonth,
+      date: todayIso
+    });
+  }
+
+  goals.push({ name, target, current });
+  document.getElementById('goalForm').reset();
+  saveAndRender();
+});
+
+document.getElementById('assetForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const t = i18n[currentLang];
+  const name = document.getElementById('assetName').value;
+  const value = parseFloat(document.getElementById('assetValue').value);
+  const category = document.getElementById('assetCategory').value;
+  const deduct = document.getElementById('assetDeduct').value;
+  const activeMonth = document.getElementById('monthFilter').value || currentMonthIso;
+
+  if (deduct === 'yes') {
+    transactions.push({
+      desc: t.txAssetBuy(name),
+      amount: value,
+      type: 'expense',
+      category: 'Inversión',
+      month: activeMonth,
+      date: todayIso
+    });
+  }
+
+  assets.push({ name, value, category, date: todayIso });
+  document.getElementById('assetForm').reset();
+  saveAndRender();
+});
+
+document.getElementById('accountForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const t = i18n[currentLang];
+  const name = document.getElementById('accName').value;
+  const balance = parseFloat(document.getElementById('accBalance').value);
+  const type = document.getElementById('accType').value;
+  const syncMode = document.getElementById('accSyncMode').value;
+  const activeMonth = document.getElementById('monthFilter').value || currentMonthIso;
+
+  if (syncMode === 'balance' && balance > 0) {
+    transactions.push({
+      desc: t.txLinkAcc(name),
+      amount: balance,
+      type: 'income',
+      category: type === 'investment' ? 'Inversiones / Dividendos' : 'Otros Ingresos',
+      month: activeMonth,
+      date: todayIso
+    });
+  }
+
+  accounts.push({ name, balance, type, syncMode, date: todayIso });
+  document.getElementById('accountForm').reset();
+  saveAndRender();
+});
+
+function removeTx(idx) { transactions.splice(idx, 1); saveAndRender(); }
+function removeGoal(idx) { goals.splice(idx, 1); saveAndRender(); }
+function removeAsset(idx) { assets.splice(idx, 1); saveAndRender(); }
+function removeAccount(idx) { accounts.splice(idx, 1); saveAndRender(); }
+
+function updateAccountBalance(idx) {
+  const t = i18n[currentLang];
+  const newVal = prompt(t.promptUpdateAcc, accounts[idx].balance);
+  if (newVal !== null && !isNaN(newVal) && parseFloat(newVal) >= 0) {
+    accounts[idx].balance = parseFloat(newVal);
+    saveAndRender();
+  }
+}
+
+function addFundsToGoal(idx) {
+  const t = i18n[currentLang];
+  const val = prompt(t.promptDeposit);
+  if (val && !isNaN(val) && parseFloat(val) > 0) {
+    const amount = parseFloat(val);
+    const categoryChoice = confirm(t.confirmInvest) ? "Inversión" : "Gastos Personales";
+    const activeMonth = document.getElementById('monthFilter').value || currentMonthIso;
+
+    goals[idx].current += amount;
+    transactions.push({
+      desc: t.txDepositGoal(goals[idx].name),
+      amount: amount,
+      type: 'expense',
+      category: categoryChoice,
+      month: activeMonth,
+      date: todayIso
+    });
+    saveAndRender();
+  }
+}
+
+function calculateCompoundInterest() {
+  const t = i18n[currentLang];
+  const p = parseFloat(document.getElementById('simInitial').value) || 0;
+  const pmt = parseFloat(document.getElementById('simMonthly').value) || 0;
+  const annualRate = (parseFloat(document.getElementById('simRate').value) || 0) / 100;
+  const years = parseInt(document.getElementById('simYears').value) || 0;
+
+  const r = annualRate / 12;
+  const totalMonths = years * 12;
+
+  let total = p * Math.pow(1 + r, totalMonths);
+  if (r > 0) {
+    total += pmt * ((Math.pow(1 + r, totalMonths) - 1) / r);
+  } else {
+    total += pmt * totalMonths;
+  }
+
+  const totalAportado = p + (pmt * totalMonths);
+  const intereses = total - totalAportado;
+
+  document.getElementById('simResult').innerHTML = `
+    ${t.simProjection(years, formatCurrency(total))}<br>
+    <span style="font-size: 0.85rem; color: var(--text-muted)">
+      ${t.simDetails(formatCurrency(totalAportado), formatCurrency(intereses))}
+    </span>
+  `;
+
+  const tbody = document.getElementById('simTableBody');
+  tbody.innerHTML = '';
+  let runningBalance = p;
+  let runningDeposits = p;
+
+  for (let yr = 1; yr <= years; yr++) {
+    for (let m = 1; m <= 12; m++) {
+      runningBalance = (runningBalance + pmt) * (1 + r);
+      runningDeposits += pmt;
+    }
+    const currentInterest = runningBalance - runningDeposits;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><strong>${yr}</strong></td>
+      <td>${formatCurrency(runningDeposits)}</td>
+      <td style="color: var(--green);">${formatCurrency(currentInterest)}</td>
+      <td style="font-weight: 700; color: #38bdf8;">${formatCurrency(runningBalance)}</td>
+    `;
+    tbody.appendChild(tr);
+  }
+}
+
+// Iniciar aplicación directa
+applyTranslations();
+saveAndRender();
+calculateCompoundInterest();
+</script>
+</body>
+</html>
